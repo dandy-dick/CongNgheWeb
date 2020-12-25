@@ -31,19 +31,14 @@ namespace TheAchEcom.Controllers
 
         public IActionResult CloneCartFromCookie()
         {
-            try
-            {
-                string requestCookie = HttpContext.Request.Cookies[_cartCookieName];
-                var cookieCart = JsonConvert.DeserializeObject<ShoppingCart>(requestCookie);
+            string requestCookie = HttpContext.Request.Cookies[_cartCookieName];
+            var cookieCart = JsonConvert.DeserializeObject<ShoppingCart>(requestCookie);
 
-                cookieCart.Id = UserManager.GetUserId(User);
-                Repository.ShoppingCart_Add(cookieCart);
+            cookieCart.Id = UserManager.GetUserId(User);
+            Repository.ShoppingCart_Add(cookieCart);
 
-                HttpContext.Response.Cookies.Delete(_cartCookieName);
-            }
-            catch (Exception)
-            {
-            }
+            HttpContext.Response.Cookies.Delete(_cartCookieName);
+            
             return RedirectToAction("ShopList", "Shop");
         }
 

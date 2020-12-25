@@ -44,6 +44,17 @@ namespace TheAchEcom.Models
             {
                 string cartId = UserManager.GetUserId(Context.User);
                 cart = _repo.GetCartById(cartId);
+
+
+                if (cart == null)
+                {
+                    var newCart = new ShoppingCart
+                    {
+                        Id = UserManager.GetUserId(Context.User)
+                    };
+                    _repo.ShoppingCart_Add(newCart);
+                    cart = newCart;
+                }
             }
             else
             {

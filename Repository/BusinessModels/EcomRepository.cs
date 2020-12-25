@@ -17,7 +17,8 @@ namespace Repository.BusinessModels
 
         private bool FullTextSearchFunction(string src, string value)
         {
-            return src.ToLower().Contains(value.ToLower());
+
+            return src != null && src.ToLower().Contains(value.ToLower());
         }
         private bool PriceLimitCheck(int? minPrice, int? maxPrice, int val)
         {
@@ -83,7 +84,11 @@ namespace Repository.BusinessModels
                                 || FullTextSearchFunction(p.Description, options.SearchText)))
             .Where(p => PriceLimitCheck(options.MinPrice, options.MaxPrice, p.UnitPrice))
             .OrderBy(p => p, new SortByComparer(options.SortBy))              /*   Apply Sort Options   */
+
+
             .ThenBy(p => p.UnitPrice, new PriceSortComparer(options.PriceSort))
+            
+            
             .ThenBy(p => p.ProductName, new AlphabetSortComparer(options.AlphabetSort))
             .ToList();
 
@@ -109,7 +114,7 @@ namespace Repository.BusinessModels
 
         public bool IsAddedToCart(Product product, ShoppingCart cart)
         {
-            return cart.CartProducts
+            return cart.CartProducts != null && cart.CartProducts
                 .FirstOrDefault(p => p.ProductId == product.Id) != null;
         }
 

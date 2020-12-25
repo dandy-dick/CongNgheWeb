@@ -32,6 +32,16 @@ namespace TheAchEcom.Controllers
             {
                 string cartId = UserManager.GetUserId(User);
                 cart = Repository.GetCartById(cartId);
+
+                if (cart == null)
+                {
+                    var newCart = new ShoppingCart
+                    {
+                        Id = UserManager.GetUserId(User)
+                    };
+                    Repository.ShoppingCart_Add(newCart);
+                    cart = newCart;
+                }
             }
             else
             {
@@ -62,7 +72,7 @@ namespace TheAchEcom.Controllers
             options.TotalItems = total;
             
             ViewBag.Options = options;
-            ViewBag.CountCartItems = cart.CartProducts.Count();
+            ViewBag.CountCartItems = cart.CartProducts != null ? cart.CartProducts.Count() : 0;
             
             return View(model);
         }
