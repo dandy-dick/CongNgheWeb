@@ -1,0 +1,49 @@
+﻿@model CheckOutModel
+
+<div class="checkout_steps">
+   <a href="/CheckOut/OrderDetail"
+      class="step @Model.IsActiveState(CheckOutState.OrderDetail)">
+      <img class="big_icon" src="~/icons/delivery-truck.svg" alt="">
+      <span class="bold_span">1. Order Detail</span>
+   </a>
+
+   <div class="step_indicator @Model.IsActiveState(CheckOutState.Payment)"></div>
+
+   <a href="/CheckOut/Payment"
+      class="step @Model.IsActiveState(CheckOutState.Payment)">
+      <img class="big_icon" src="~/icons/credit-card.svg" alt="">
+      <span class="bold_span">2. Payment </span>
+   </a>
+   <div class="step_indicator @Model.IsActiveState(CheckOutState.Complete)"></div>
+
+   <a href="/CheckOut/Complete"
+      class="step @Model.IsActiveState(CheckOutState.Complete)">
+      <img class="big_icon" src="~/icons/tick.svg" alt="">
+      <span class="bold_span">3. Complete </span>
+   </a>
+</div>
+
+<div class="line_separator"></div>
+
+
+<div class="order_complete">
+
+
+   <div class="flex_center">
+      <!-- <img src="~/icons/congratulation.gif" alt=""> -->
+      <img src="~/icons/cat.gif" alt=""
+           style="margin-left: 2rem;">
+   </div>
+
+   <h3> Complete!! Thanks for shopping </h3>
+   <form action="/Shop/ShopList" method="get">
+
+      <button class="small_btn outline clickable">
+         Go Back To Shop
+      </button>
+   </form>
+</div>
+
+@section ViewScripts {
+   <script src="~/js/checkout.js"></script>
+}

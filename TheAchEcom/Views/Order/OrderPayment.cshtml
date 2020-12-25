@@ -1,0 +1,69 @@
+﻿@model CheckOutModel
+
+<div class="checkout_steps">
+   <a href="/CheckOut/OrderDetail"
+      class="step @Model.IsActiveState(CheckOutState.OrderDetail)">
+      <img class="big_icon" src="~/icons/delivery-truck.svg" alt="">
+      <span class="bold_span">1. Order Detail</span>
+   </a>
+
+   <div class="step_indicator @Model.IsActiveState(CheckOutState.Payment)"></div>
+
+   <a href="/CheckOut/Payment"
+      class="step @Model.IsActiveState(CheckOutState.Payment)">
+      <img class="big_icon" src="~/icons/credit-card.svg" alt="">
+      <span class="bold_span">2. Payment </span>
+   </a>
+   <div class="step_indicator @Model.IsActiveState(CheckOutState.Complete)"></div>
+
+   <a href="/CheckOut/Complete"
+      class="step @Model.IsActiveState(CheckOutState.Complete)">
+      <img class="big_icon" src="~/icons/tick.svg" alt="">
+      <span class="bold_span">3. Complete </span>
+   </a>
+</div>
+
+<div class="line_separator"></div>
+
+<div class="payment">
+
+   <h3 class="small_heading" style="text-align: center;">
+      Choose How To Pay
+   </h3>
+
+   <div class="payment_methods">
+      <div class="method active clickable" id="paypal_method" 
+           onclick="selectPaymentMethod('paypal')">
+         <img src="~/icons/pp.png" alt="" class="huge_icon">
+      </div>
+
+      <div class="method clickable" id="nganluong_method"
+           onclick="selectPaymentMethod('nganluong')">
+         <img src="~/icons/nganluong.png" alt="" class="huge_icon">
+      </div>
+   </div>
+
+   <div class="line_separator"></div>
+
+   <div class="payment_controls">
+      <div id="paypal_checkout" class="active">
+      </div>
+
+      <div id="nganluong_checkout" class="flex_center">
+         <button class="clickable" 
+                 onclick="requestNganLuongCheckOut()">
+            <img src="~/icons/safe-pay-2.png" style="transform: scale(1.5)"/>
+         </button>
+      </div>
+   </div>
+</div>
+
+<div style="height: 15rem;"></div>
+
+
+
+@section ViewScripts {
+   <script src="~/js/site.js"></script>
+   <script src="https://www.paypal.com/sdk/js?client-id=@Model.PayPalClientId"></script>
+   <script src="~/js/checkout.js"></script>
+}

@@ -1,0 +1,53 @@
+﻿@using Repository.DomainModels
+@using Repository.BusinessModels
+@using Repository.BusinessModels.ShopList;
+@inject Microsoft.AspNetCore.Identity.SignInManager<Customer> signInManager;
+@inject Microsoft.AspNetCore.Identity.UserManager<Customer> userManager;
+@{
+   var repository = new EcomRepository();
+   var options = (ShopListOptions)ViewBag.Options ?? new ShopListOptions();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Another Online Store</title>
+   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="~/css/site.css">
+   <link rel="stylesheet" href="~/css/cart-detail.css">
+   <link rel="stylesheet" href="~/css/product-detail-style.css">
+   <link rel="stylesheet" href="~/css/shop-list.css">
+</head>
+<body>
+   <!-- #Header  -->
+   <!-- #Body -->
+      @RenderBody()
+
+   <script src="~/lib/jquery/dist/jquery.min.js"></script>
+   <script src="~/js/ExtendForm.js"></script>
+   <script>
+      const SHOPLIST_FORM = ExtendForm("#shoplist_form");
+
+      function ToggleActive(element) {
+         $(element).toggleClass("active");
+      }
+
+      function ToggleInput(searchTrigger) {
+         var searchInput = $(searchTrigger).find('input').first();
+
+         if ($(searchTrigger).hasClass('active') == false) {
+            $(searchInput).on('focusout', () => {
+               $(searchTrigger).removeClass('active');
+            });
+            $(searchTrigger).addClass('active');
+            $(searchInput).focus();
+         }
+      }
+   </script>
+
+   @RenderSection("ViewScripts", false)
+</body>
+
+</html>

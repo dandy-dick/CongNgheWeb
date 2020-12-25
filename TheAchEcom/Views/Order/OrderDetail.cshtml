@@ -1,0 +1,128 @@
+﻿@model CheckOutModel
+@using TheAchEcom.Controllers;
+@using Microsoft.AspNetCore.Mvc.ModelBinding;
+
+@{ Dictionary<string, ModelStateError> errors = ViewBag.ModelStateErrorDictionary;
+   OrderDetailModel orderDetailModel = ViewBag.OrderDetailModel ?? new OrderDetailModel(); }
+
+
+<div class="checkout_steps">
+   <div class="step @Model.IsActiveState(CheckOutState.OrderDetail)">
+      <img class="big_icon" src="~/icons/delivery-truck.svg" alt="">
+      <span class="bold_span">1. Order Detail</span>
+   </div>
+
+   <div class="step_indicator @Model.IsActiveState(CheckOutState.Payment)"></div>
+
+   <div class="step @Model.IsActiveState(CheckOutState.Payment)">
+      <img class="big_icon" src="~/icons/credit-card.svg" alt="">
+      <span class="bold_span">2. Payment </span>
+   </div>
+   <div class="step_indicator @Model.IsActiveState(CheckOutState.Complete)"></div>
+
+   <div class="step @Model.IsActiveState(CheckOutState.Complete)">
+      <img class="big_icon" src="~/icons/tick.svg" alt="">
+      <span class="bold_span">3. Complete </span>
+   </div>
+</div>
+
+<div class="line_separator"></div>
+
+
+<div class="checkout_detail">
+   <form id="order_detail" class="detail"
+         method="post" action="/CheckOut/OrderDetail">
+
+      <span class="bold_span title"> Tên người nhận </span>
+      @if (errors != null && errors.ContainsKey("FullName") && errors["FullName"].State == "invalid")
+      {
+         <div style="color: red;margin: 0.5rem 0;">
+            @errors["FullName"].ErrorMessages
+         </div>
+      }
+      <input name="FullName"  value="@Model.OrderDetail.FullName"
+             type="text" class="primary_input" placeholder="Enter full name">
+
+      <span class="bold_span title"> Địa chỉ giao hàng </span>
+      @if (errors != null && errors.ContainsKey("DeliveryAddress") && errors["DeliveryAddress"].State == "invalid")
+      {
+         <div style="color: red;margin: 0.5rem 0;">
+            @errors["DeliveryAddress"].ErrorMessages
+         </div>
+      }
+      <input name="DeliveryAddress"
+             type="text" class="primary_input" placeholder="Where should we deliver the order to"
+             value="@Model.OrderDetail.DeliveryAddress">
+
+
+      <span class="bold_span title"> Số điện thoại người nhận </span>
+      @if (errors != null && errors.ContainsKey("PhoneNumber") && errors["PhoneNumber"].State == "invalid")
+      {
+         <div style="color: red;margin: 0.5rem 0;">
+            @errors["PhoneNumber"].ErrorMessages
+         </div>
+      }
+      <input name="PhoneNumber"  value="@Model.OrderDetail.PhoneNumber"
+             type="text" class="primary_input" placeholder="We will call you">
+
+      <span class="bold_span title"> Mô tả thêm </span>
+      <textarea name="Description" value="@Model.OrderDetail.Description"
+                class="primary_input" rows="5" placeholder="Any extra infomation, please let us know ... "></textarea>
+   </form>
+
+   <div class="order">
+
+      <h3 class="small_heading" style="text-align: center;"> Your Order </h3>
+
+      <div class="line_separator"></div>
+
+      <div class="items">
+
+         @foreach (var item in Model.Cart.CartProducts)
+         {
+<div class="item flex_center">
+   <div class="name">
+      @item.Product.ProductName
+   </div>
+
+   <div class="summary flex_center">
+      <span class="quantity"> @item.Quantity </span>
+      <img src="~/icons/cancel.svg" alt=""
+           class="small_icon">
+
+      <span class="unit_price"> @item.Product.UnitPrice usd </span>
+   </div>
+</div>   }
+      </div>
+
+      <div class="line_separator"></div>
+
+      <div class="summary flex_center">
+         <div>
+            <span class="faded_span"> Quantity: </span>
+            <span class="bold_span"> @Model.TotalQuantity </span>
+         </div>
+
+         <div style="margin-left:auto">
+            <span class="faded_span">Total: </span>
+            <span class="bold_span"> @Model.TotalPrice usd </span>
+         </div>
+      </div>
+
+      <div class="line_separator"></div>
+
+      <div class="controls flex_center" style="justify-content: center;">
+         <a href="/Shop/ShopList"
+            class="no_deco small_btn outline clickable" style="margin-right:1rem">
+            Go Back <br>
+            <span class="bold_span" style="color:inherit;font-size: 0.8rem;">( Keep my order )</span>
+         </a>
+         <button onclick="$('#order_detail').submit()"
+                 class="small_btn primary clickable">
+            Proceed <br> To Payment
+         </button>
+      </div>
+   </div>
+</div>
+
+<div style="height: 5rem;"></div>
