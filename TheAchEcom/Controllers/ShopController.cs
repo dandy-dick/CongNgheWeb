@@ -15,65 +15,29 @@ namespace TheAchEcom.Controllers
 {
     public class ShopController : ApplicationController
     {
-        private readonly EcomRepository Repository = new EcomRepository();
-        private readonly SignInManager<Customer> SignInManager;
-        private readonly UserManager<Customer> UserManager;
-
-        public ShopController(SignInManager<Customer> signInManager, UserManager<Customer> userManager)
+        private readonly IPageMaster PageMaster;
+        public ShopController(IPageMaster pageMaster)
         {
-            SignInManager = signInManager;
-            UserManager = userManager;
+            PageMaster = pageMaster;
         }
 
         public IActionResult ShopList(ShopListOptions options)
         {
-            ShoppingCart cart;
-            if (SignInManager.IsSignedIn(User))
-            {
-                string cartId = UserManager.GetUserId(User);
-                cart = Repository.GetCartById(cartId);
-
-                if (cart == null)
-                {
-                    var newCart = new ShoppingCart
-                    {
-                        Id = UserManager.GetUserId(User)
-                    };
-                    Repository.ShoppingCart_Add(newCart);
-                    cart = newCart;
-                }
-            }
-            else
-            {
-                try
-                {
-                    string requestCookie = HttpContext.Request.Cookies[_cartCookieName];
-                    cart = JsonConvert.DeserializeObject<ShoppingCart>(requestCookie);
-                }
-                catch (Exception)
-                {
-                    cart = new ShoppingCart()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        CartProducts = new List<CartProduct>()
-                    };
-                    HttpContext.Response.Cookies
-                        .Append(_cartCookieName, JsonConvert.SerializeObject(cart));
-                }
-            }
+            var repo = new EcomRepository();
+            var cart = PageMaster.GetShoppingCart();
 
             int total;
             var model = new ShopListModel
             {
-                ShopList = Repository.GetShopList(options, cart, out total),
-                Brands = Repository.GetAllBrands()
+                ShopList = repo.GetShopList(options, cart, out total),
+                Brands = repo.GetAllBrands()
             };
-
-            options.TotalItems = total;
             
+            options.TotalItems = total;
+
             ViewBag.Options = options;
             ViewBag.CountCartItems = cart.CartProducts != null ? cart.CartProducts.Count() : 0;
-            
+
             return View(model);
         }
     }

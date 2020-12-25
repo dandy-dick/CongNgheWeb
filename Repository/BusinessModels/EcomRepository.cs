@@ -310,17 +310,17 @@ namespace Repository.BusinessModels
         public void ShoppingCart_Add(ShoppingCart cart)
         {
             using var db = new EcomContext();
-            db.ShoppingCarts.Add(cart);
-            var cartProducts = cart.CartProducts ?? new List<CartProduct>();
-            foreach (var item in cartProducts)
+
+            if (cart.CartProducts != null)
             {
-                db.CartProducts.Add(new CartProduct
+                foreach (var item in cart.CartProducts)
                 {
-                    CartId = cart.Id,
-                    Quantity = item.Quantity,
-                    ProductId = item.ProductId
-                });
+                    item.CartId = cart.Id;
+                    item.Id ??= Guid.NewGuid().ToString();
+                }
             }
+
+            db.ShoppingCarts.Add(cart);
             db.SaveChanges();
         }
 
